@@ -43,9 +43,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     static final String HELP_TEXT = "Этот чат создан для регистрации тренировок.\n\n" +
             "Вы можете использовать команды в меню слева или набрать их. \n\n" +
             "Команда /start покажет приветсвенное сообщение. \n\n" +
-            "Команда /createworkout пока не обрабатывается. \n\n" +
-            "Команда /myworkouts пока не обрабатывается. \n\n" +
-            "Команда /deleteworkout пока не обрабатывается.\n\n" +
+            "Команда /create_workout пока не обрабатывается. \n\n" +
+            "Команда /my_workouts пока не обрабатывается. \n\n" +
+            "Команда /delete_workout пока не обрабатывается.\n\n" +
             "Команда /help покажет это сообщение повторно. \n\n" +
             "Команда /settings пока не обрабатывается.";
 
@@ -53,9 +53,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.config = config;
         List<BotCommand> listofCommands = new ArrayList<>();
         listofCommands.add(new BotCommand("/start", "Приветсвенное сообщение"));
-        listofCommands.add(new BotCommand("/createworkout", "Начать запись тренировки"));
-        listofCommands.add(new BotCommand("/myworkouts", "Получить записи о тренировках"));
-        listofCommands.add(new BotCommand("/deleteworkout", "Удалить тренировку"));
+        listofCommands.add(new BotCommand("/create_workout", "Начать запись тренировки"));
+        listofCommands.add(new BotCommand("/my_workouts", "Получить записи о тренировках"));
+        listofCommands.add(new BotCommand("/delete_workout", "Удалить тренировку"));
         listofCommands.add(new BotCommand("/help", "Инструкция по чату"));
         listofCommands.add(new BotCommand("/settings", "Настройки чата"));
         try {
@@ -91,12 +91,57 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                     sendMessage(chatId, HELP_TEXT);
                     break;
+
+              case "/create_workout":
+                    create_workout(chatId);
+                    break;
                 default:
 
                         sendMessage(chatId, "Не понимать начальника, я ток учусь");
 
             }
 
+        }
+    }
+
+    private void create_workout(long chatId) {
+
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText("Отличная идея! Какой тип тренировки вы хотие начать?");
+
+        InlineKeyboardMarkup markupInLine = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
+        List<InlineKeyboardButton> rowInLine = new ArrayList<>();
+        var уasyWorkoutButton = new InlineKeyboardButton();
+
+        уasyWorkoutButton.setText("Легкая тренировка");
+        уasyWorkoutButton.setCallbackData("EASY_WORKOUT");
+
+        var mediumWorkoutButton = new InlineKeyboardButton();
+
+        mediumWorkoutButton.setText("Стредняя тренировка");
+        mediumWorkoutButton.setCallbackData("MEDIUM_WORKOUT");
+
+        var hardWorkoutButton = new InlineKeyboardButton();
+
+        hardWorkoutButton.setText("Тяжелая тренировка");
+        hardWorkoutButton.setCallbackData("HARD_WORKOUT");
+
+        rowInLine.add(уasyWorkoutButton);
+        rowInLine.add(mediumWorkoutButton);
+        rowInLine.add(hardWorkoutButton);
+
+        rowsInLine.add(rowInLine);
+
+        markupInLine.setKeyboard(rowsInLine);
+        message.setReplyMarkup(markupInLine);
+
+        try{
+            execute(message);
+        }
+        catch (TelegramApiException e){
+            log.error("Error occurred: " + e.getMessage());
         }
     }
 
