@@ -101,7 +101,59 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             }
 
+        } else if (update.hasCallbackQuery()) {
+
+            String callbackData = update.getCallbackQuery().getData();
+            long messageId = update.getCallbackQuery().getMessage().getMessageId();
+            long chartId = update.getCallbackQuery().getMessage().getChatId();
+
+            if (callbackData.equals("EASY_WORKOUT")){
+
+                String text = "Вы выбрали легкую тренировку, с чего начнем?";
+                EditMessageText message = new EditMessageText();
+                message.setChatId(String.valueOf(chartId));
+                message.setText(text);
+                message.setMessageId((int) messageId);
+                try{
+                    execute(message);
+                }
+                catch (TelegramApiException e){
+                    log.error("Error occurred: " + e.getMessage());
+                }
+            }
+            else if (callbackData.equals("MEDIUM_WORKOUT")) {
+
+                String text = "Вы выбрали среднюю тренировку, с чего начнем?";
+                EditMessageText message = new EditMessageText();
+                message.setChatId(String.valueOf(chartId));
+                message.setText(text);
+                message.setMessageId((int) messageId);
+                try{
+                    execute(message);
+                }
+                catch (TelegramApiException e){
+                    log.error("Error occurred: " + e.getMessage());
+                }
+            }
+            else if (callbackData.equals("HARD_WORKOUT")) {
+
+                String text = "Вы выбрали тяжелую тренировку, с чего начнем?";
+                EditMessageText message = new EditMessageText();
+                message.setChatId(String.valueOf(chartId));
+                message.setText(text);
+                message.setMessageId((int) messageId);
+
+                try{
+                    execute(message);
+                }
+                catch (TelegramApiException e){
+                    log.error("Error occurred: " + e.getMessage());
+                }
+
+            };
+
         }
+
     }
 
     private void create_workout(long chatId) {
